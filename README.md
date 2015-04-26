@@ -124,14 +124,14 @@ activity_labels <- read.table(paste(data_folder, "activity_labels.txt", sep='/')
 #### 3b. Replace numeric categories for descriptive labels
 If we look at the ```activity_labels``` table, we se this:
 
-| V1 | V2                 |
-| -- | ------------------ |
-| 1  | WALKING            |
-| 2  | WALKING_UPSTAIRS   |
-| 3  | WALKING_DOWNSTAIRS |
-| 4  | SITTING            |
-| 5  | STANDING           |
-| 6  | LAYING             |
+| V1  | V2                 |
+| --- | ------------------ |
+| 1   | WALKING            |
+| 2   | WALKING_UPSTAIRS   |
+| 3   | WALKING_DOWNSTAIRS |
+| 4   | SITTING            |
+| 5   | STANDING           |
+| 6   | LAYING             |
 
 So what we want to do is set activity(currently a number 1-6) to equal the value in that row of ```activity_labels$V2```. For this we use the ```mutate``` function from the ```dplyr``` package:
 ```
