@@ -58,10 +58,12 @@ combined_raw <- rbind(combined_test, combined_train)
 
 #### Step 1 result
 After step 1, there is a data frame: ```combined_raw``` containing all the data in the test and training set:
+
 | Features (1:561) | Activity(562) | Subject |
 | ---------------- | ------------- | ------- |
 | test data        |               |         |
 | training data | |
+
 
 ### Step 2: "Extract only the measurements on the mean and standard deviation for each measurement."
 For this, we need to know which columns refer to measurements that are means or standard deviations of a measurement. From the codebook ```features_info.txt``` that comes with the data, we can see that the measurements are denoted by {signal}{variable}{axis}, for example: ```tBodyAcc-mean()-X``` for the mean of the Body Acceleration in the X direction. So, in order to get at the data we want, we will need all columns that refer to a variable containing ```mean()``` and ```std()``` 
