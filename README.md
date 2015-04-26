@@ -44,3 +44,55 @@ For this we need to join together 6 separate files. Within the ```test``` folder
  ``` raw_test_y <- read.table(paste(data_folder, "test", "y_test.txt", sep="/"), col.names=c('activity')) ```
 * Read in the subject identification from the test data; label the column:
  ``` raw_test_subject <- read.table(paste(data_folder, "test", "subject_test.txt", sep="/"), col.names=c('subject')) ```
+* Combine these frames together:
+ ``` combined_test <- cbind(raw_test_x, raw_test_y, raw_test_subject) ``` 
+ 
+#### 1b. Read in the training data
+This follows exactly the same pattern as above, except the folder is named ```train``` and the files are named ```X_train.txt```, ```y_train.txt```, and ```subject_train.txt``` respectively. The resulting combined set is named ```combined_train```
+
+#### 1c. Combine test and training data
+This is done by simply ```rbind```-ing the two datasets together:
+```
+combined_raw <- rbind(combined_test, combined_train)
+```
+
+#### Step 1 result
+After step 1, there is a data frame: ```combined_raw``` containing all the data in the test and training set:
+| Features (1:561) | Activity(562) | Subject |
+| ---------------- | ------------- | ------- |
+| test data        |               |         |
+| training data | |
+
+### Step 2: "Extract only the measurements on the mean and standard deviation for each measurement."
+For this, we need to know which columns refer to measurements that are means or standard deviations of a measurement. From the codebook ```features_info.txt``` that comes with the data, we can see that the measurements are denoted by {signal}{variable}{axis}, for example: ```tBodyAcc-mean()-X``` for the mean of the Body Acceleration in the X direction. So, in order to get at the data we want, we will need all columns that refer to a variable containing ```mean()``` and ```std()``` 
+
+Additionally, there are:
+
+> Additional vectors obtained by averaging the signals in a signal window sample
+ 
+I have taken these to also represent 'Mean' values, so have included them in the dataset. These variables all end in ```Mean```
+
+In order to filter the data, we read in the file that gives us the name of each feature: ```features.txt``` and use it to filter the dataset.
+
+#### 2a. Read in the list of features to a vector
+```
+feature_names <- read.table(paste(data_folder, "features.txt", sep='/'), col.names=c('index', 'feature'))
+
+  #the actual names are in the 'feature' column, so lets grab that
+  feature_names <- as.character(feature_names$feature)
+
+```
+
+#### 2b. Get the inidices of features we want
+Reminder, these are all features that include ```mean()```, ```std()```, or ```Mean```
+```
+indices <- grep('mean()|std()|Mean', feature_names)
+```
+
+#### 2c. Add Indices for the subject and activity
+As a reminder, our combined data set looks something like this:
+
+| Features (1:561) | Activity(562) | Subject |
+| ---------------- | ------------- | ------- |
+| test data        |               |         |
+| training data | |
