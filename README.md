@@ -68,12 +68,6 @@ After step 1, there is a data frame: ```combined_raw``` containing all the data 
 ### Step 2: "Extract only the measurements on the mean and standard deviation for each measurement."
 For this, we need to know which columns refer to measurements that are means or standard deviations of a measurement. From the codebook ```features_info.txt``` that comes with the data, we can see that the measurements are denoted by {signal}{variable}{axis}, for example: ```tBodyAcc-mean()-X``` for the mean of the Body Acceleration in the X direction. So, in order to get at the data we want, we will need all columns that refer to a variable containing ```mean()``` and ```std()``` 
 
-Additionally, there are:
-
-> Additional vectors obtained by averaging the signals in a signal window sample
- 
-I have taken these to also represent 'Mean' values, so have included them in the dataset. These variables all end in ```Mean```
-
 In order to filter the data, we read in the file that gives us the name of each feature: ```features.txt``` and use it to filter the dataset.
 
 #### 2a. Read in the list of features to a vector
@@ -86,9 +80,9 @@ feature_names <- read.table(paste(data_folder, "features.txt", sep='/'), col.nam
 ```
 
 #### 2b. Get the inidices of features we want
-Reminder, these are all features that include ```mean()```, ```std()```, or ```Mean```
+Reminder, these are all features that include ```mean()```, or ```std()```
 ```
-indices <- grep('mean()|std()|Mean', feature_names)
+indices <- grep('mean\\(\\)|std\\(\\)', feature_names)
 ```
 
 #### 2c. Add Indices for the subject and activity
@@ -110,7 +104,7 @@ We create a data frame ```filtered_raw``` containing just the columns we care ab
 filtered_raw <- combined_raw[indices] 
 ```
 #### Step 2 result
-At the end of step 2, we have a dataframe—```filtered_raw``` containing 10299 observations of the 86 measurements we care about, plus the identifiers of ```subject``` and ```activity```.
+At the end of step 2, we have a dataframe—```filtered_raw``` containing 10299 observations of the measurements we care about, plus the identifiers of ```subject``` and ```activity```.
 
 ### Step 3: "Use descriptive activity names to name the activities in the data set"
 Currently, our activity column is a set of numbers, each one representing an activity. The file ```activity_labels.txt``` is a guide to what these activities are. In this step, we will replace the number with the label, so that e.g. ```1``` becomes ```WALKING```, ```2``` becomes ```WALKING_UPSTAIRS``` and so on.
@@ -122,7 +116,7 @@ activity_labels <- read.table(paste(data_folder, "activity_labels.txt", sep='/')
 ```
 
 #### 3b. Replace numeric categories for descriptive labels
-If we look at the ```activity_labels``` table, we se this:
+If we look at the ```activity_labels``` table, we see this:
 
 | V1 | V2                 |
 | -- | ------------------ |
@@ -141,7 +135,7 @@ activity_labelled <- mutate(filtered_raw, activity=activity_labels$V2[activity])
 At the end of step 3, we have a dataframe ```activity_labelled``` containing the measurements we care about, with the activity they describe labelled descriptively according to the labels provided in ```activity_labels.txt```.
 
 ### Step 4: "Appropriately label the data set with descriptive variable names"
-This step is all about setting the variable names of the columns of data. We have a set of descriptive variable names provided to us in ```features.txt``` that we have already used in step 2 to just select the columns we want from the raw data set. We can use this same list of feature names, along with the ```indices``` of the desired variables to give names to the columns in our filtered data:
+This step is all about setting the variable names of the columns of data. We have a set of descriptive variable names provided to us in ```features.txt``` that we have already used in step 2 to just select the columns we want from the raw data set. We can use this same list of feature names, along with the ```indices``` of the desired variables to give names to the columns in our filtered data. Although these variable names are concise, they are still *descriptive* in that they tell us what each variable means. The verbose meaning of each variable is described in the [code book](codebook.md)
 
 #### 4a. Add variable names for activity and subject
 Remember our combined raw data had columns 1-561 of feature data, then activity and subject glommed on the end of it? Let's do the same with the feature names vector:

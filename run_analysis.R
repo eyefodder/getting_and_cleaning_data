@@ -49,9 +49,7 @@ run_analysis <- function(data_folder='UCI HAR Dataset'){
   # 2b. get indices of names with mean | std dev
   # from the supporting doc 'features_info.txt'
   # The main measurements' means and std deviations are denoted by mean() and std()
-  # There are additional vectors at the end which also involve averaging signals in a signal window sample
-  # this could be said to be a mean, so I've included them
-  indices <- grep('mean()|std()|Mean', feature_names)
+  indices <- grep('mean\\(\\)|std\\(\\)', feature_names)
   
   # 2c. add indices for subject & activity (last two columns from step 1)
   # the feature table has 561 measures, so 562 and 563 are the added activity and subject data
@@ -78,6 +76,19 @@ run_analysis <- function(data_folder='UCI HAR Dataset'){
   
   # 4b. Use the indices vector from step 2 to get our filtered feature names
   filtered_feature_names <- feature_names[indices]
+  
+  # 4c. manipulate original variables to be more descriptive
+  filtered_feature_names <- gsub('^t', 'time', filtered_feature_names)
+  filtered_feature_names <- gsub('^f', 'frequency', filtered_feature_names)
+  filtered_feature_names <- gsub('Acc', 'Acceleration', filtered_feature_names)
+  filtered_feature_names <- gsub('Gyro', 'Gyroscope', filtered_feature_names)
+  filtered_feature_names <- gsub('Mag', 'Magnitude', filtered_feature_names)
+  filtered_feature_names <- gsub('-mean\\(\\)', 'Mean', filtered_feature_names)
+  filtered_feature_names <- gsub('-std\\(\\)', 'StandardDeviation', filtered_feature_names)
+  filtered_feature_names <- gsub('-X', 'XAxis', filtered_feature_names)
+  filtered_feature_names <- gsub('-Y', 'YAxis', filtered_feature_names)
+  filtered_feature_names <- gsub('-Z', 'ZAxis', filtered_feature_names)
+  filtered_feature_names <- gsub('BodyBody', 'Body', filtered_feature_names)
   
   # 4c. rename our column names
   names(activity_labelled) <- filtered_feature_names
